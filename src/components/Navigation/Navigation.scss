@@ -1,0 +1,63 @@
+@import "../../index.scss";
+
+header {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 15vh;
+  padding-top: 20px;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  nav {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    z-index: 10;
+    margin: 0 auto;
+    height: 80%;
+    width: 100%;
+    ul {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      list-style: none;
+      li {
+        a {
+          color: #fff;
+          text-decoration: none;
+          display: block;
+          width: 100%;
+          span {
+            padding: 10px;
+            border: solid 3px #fff;
+            border-radius: 50%;
+            transition: all 0.2s;
+          }
+          span:hover {
+            transform: scale(1.1);
+            color: #ddd;
+            border: solid 3px #ddd;
+          }
+          span.fa-info-circle {
+            border: none;
+          }
+        }
+      }
+      li.hamburger-btn:hover {
+        transform: scale(1.1);
+        color: #ccc;
+      }
+    }
+  }
+  div.polygon-bg-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: $dark;
+    z-index: 4;
+    height: 100%;
+    width: 100%;
+    clip-path: polygon(0 0, 100% 0%, 100% 81%, 0 100%);
+  }
+}

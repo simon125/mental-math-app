@@ -1,0 +1,32 @@
+@import "../../index.scss";
+footer {
+  height: 10vh;
+  z-index: 10;
+  position: relative;
+  .bg-footer-layer {
+    clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 26%);
+    z-index: 10;
+    background: #193c5a;
+    height: 100%;
+    width: 100%;
+  }
+  ul {
+    list-style: none;
+    color: #fff;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 35px;
+    li {
+      a {
+        text-decoration: none;
+        color: #fff;
+      }
+      a:hover {
+        color: #ddd;
+      }
+      span {
+        margin-left: 20px;
+      }
+    }
+  }
+}
