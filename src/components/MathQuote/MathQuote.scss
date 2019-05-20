@@ -1,0 +1,16 @@
+span.fa-quote-right {
+  float: left;
+  margin-right: 3px;
+}
+h3 {
+  font-weight: 300;
+  font-size: 30px;
+  letter-spacing: 1.1px;
+}
+span.fa-sync-alt {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  cursor: pointer;
+  transition: transform 4s step-end;
+}

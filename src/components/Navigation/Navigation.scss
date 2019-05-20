@@ -43,6 +43,22 @@ header {
             border: none;
           }
         }
+        .link-left,
+        .link-right {
+          transform: translateX(0);
+          opacity: 1;
+          transition: all 0.4s ease-out;
+        }
+        .link-left.active,
+        .link-right.active {
+          opacity: 0;
+        }
+        .link-left.active {
+          transform: translateX(150px);
+        }
+        .link-right.active {
+          transform: translateX(-150px);
+        }
       }
       li.hamburger-btn:hover {
         transform: scale(1.1);

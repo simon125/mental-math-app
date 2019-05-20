@@ -21,11 +21,11 @@
   transform: translateY(25px);
   transition: 0.2s transform linear;
 }
-.hamburger:focus {
+.active.hamburger {
   transform: rotate(45deg) translateY(5px);
   border: none;
   outline: transparent;
 }
-.hamburger:focus::after {
+.active.hamburger::after {
   transform: rotate(-90deg) translateX(-10px);
 }
