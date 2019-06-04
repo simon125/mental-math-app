@@ -8,24 +8,25 @@ export default function InputForm({
   isValid = true,
   value = "",
   handleChange = () => "",
-  name
+  name,
+  errMsg = "",
+  onBlur
 }) {
   return (
     <div className="input-form">
       <input
         value={value}
         autoComplete="off"
-        className={!isValid && "is-invalid"}
+        className={isValid ? "" : "is-invalid"}
         onChange={handleChange}
-        value={value}
+        onBlur={onBlur}
         type={type}
         id={id}
         name={name}
+        autoComplete="off"
       />
       <label htmlFor={id}>{label}</label>
-      <span className={isValid ? "hide-message" : "show-message"}>
-        This field is invalid!
-      </span>
+      {isValid ? "" : <span className="show-message">{errMsg}!</span>}
     </div>
   );
 }

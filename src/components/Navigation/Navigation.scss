@@ -54,10 +54,14 @@ header {
           opacity: 0;
         }
         .link-left.active {
-          transform: translateX(150px);
+          transform: translateX(150px) scale(0.7);
+          visibility: hidden;
+          pointer-events: none;
         }
         .link-right.active {
-          transform: translateX(-150px);
+          transform: translateX(-150px) scale(0.7);
+          visibility: hidden;
+          pointer-events: none;
         }
       }
       li.hamburger-btn:hover {

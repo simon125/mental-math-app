@@ -1,7 +1,7 @@
 @import "../../index.scss";
 
 .input-form {
-  margin-top: 25px;
+  margin-top: 36px;
   position: relative;
   label {
     color: $primary;
@@ -29,6 +29,9 @@
     color: rgb(252, 13, 73);
   }
   span.show-message {
+    position: absolute;
+    left: 0;
+    bottom: -14px;
     font-size: 13px;
     color: rgb(252, 13, 73);
   }

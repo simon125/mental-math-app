@@ -1,16 +1,36 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import { Formik } from "formik";
+import {
+  validatePhraseLength,
+  validateEmail,
+  validatePasswords
+} from "../../utils/validate";
 import InputForm from "../InputForm/InputForm";
 import MathQuote from "../MathQuote/MathQuote";
 import "./SigninForm.scss";
+import { createUser } from "../../actions/authActions";
 
-export default function SigninForm() {
+function SigninForm({ createUser }) {
   const [singUpCredentials, setCredentials] = useState({
     name: "",
     email: "",
     password: "",
     repeatedPassword: ""
   });
+
+  const validateSignInForm = ({ name, email, password, repeatedPassword }) => {
+    const nameStatus = validatePhraseLength(name);
+    const emailStatus = validateEmail(email);
+    const passwordsStatus = validatePasswords(password, repeatedPassword);
+    return {
+      name: nameStatus.message,
+      email: emailStatus.message,
+      password: passwordsStatus.message,
+      repeatedPassword: passwordsStatus.message
+    };
+  };
+
   return (
     <div className="page">
       <section className="signin-container">
@@ -23,71 +43,86 @@ export default function SigninForm() {
             <div className="signin-container__form">
               <Formik
                 initialValues={{ ...singUpCredentials }}
-                validate={values => {
-                  let errors = {};
-                  if (!values.email) {
-                    errors.email = "Required";
-                  } else if (
-                    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                      values.email
-                    )
-                  ) {
-                    errors.email = "Invalid email address";
-                  }
-                  return errors;
-                }}
-                onSubmit={values => {
+                onSubmit={(values, { setSubmitting }) => {
                   setCredentials({ ...values });
+                  setTimeout(() => setSubmitting(false), 3 * 1000);
                 }}
+                validate={validateSignInForm}
               >
                 {({
                   values,
                   errors,
-                  touched,
                   handleChange,
-                  handleBlur,
                   handleSubmit,
-                  isSubmitting
+                  setValues,
+                  isValidating,
+                  handleBlur,
+                  touched
                 }) => (
-                  <form onSubmit={handleSubmit}>
+                  <form
+                    onSubmit={e => {
+                      e.preventDefault();
+                      if (isValidating) {
+                        debugger;
+                        handleSubmit();
+                        setValues({
+                          name: "",
+                          email: "",
+                          password: "",
+                          repeatedPassword: ""
+                        });
+                      }
+                    }}
+                  >
                     <InputForm
+                      onBlur={handleBlur}
                       handleChange={handleChange}
                       value={values.name}
+                      isValid={errors.name && touched.name}
+                      errMsg={errors.name}
                       id="name"
                       name="name"
-                      isValid={true}
                       label="Name"
                       type="text"
                     />
                     <InputForm
+                      onBlur={handleBlur}
                       handleChange={handleChange}
                       value={values.email}
                       id="email"
                       name="email"
-                      isValid={true}
+                      isValid={errors.email && touched.email}
+                      errMsg={errors.email}
                       label="Email"
                       type="text"
                     />
                     <InputForm
+                      onBlur={handleBlur}
                       handleChange={handleChange}
                       value={values.password}
                       id="password"
                       name="password"
-                      isValid={true}
+                      isValid={errors.password && touched.password}
+                      errMsg={errors.password}
                       label="Password"
                       type="password"
                     />
                     <InputForm
+                      onBlur={handleBlur}
                       handleChange={handleChange}
                       value={values.repeatedPassword}
                       id="repeatedPassword"
                       name="repeatedPassword"
-                      isValid={true}
+                      errMsg={errors.repeatedPassword}
+                      isValid={
+                        errors.repeatedPassword && touched.repeatedPassword
+                      }
                       label="Repeat password"
                       type="password"
                     />
-
-                    <button className="btn btn-dark">Sing In</button>
+                    <button type="submit" className="btn btn-dark">
+                      Sing In
+                    </button>
                   </form>
                 )}
               </Formik>
@@ -99,7 +134,10 @@ export default function SigninForm() {
               <span className="line" />
             </div>
             <div className="form-box__btn-group">
-              <button className="btn facebook-btn">
+              <button
+                onClick={() => console.log(singUpCredentials)}
+                className="btn facebook-btn"
+              >
                 <span className="fab fa-facebook-f" /> Facebook register
               </button>
               <button className="btn google-btn">
@@ -109,6 +147,26 @@ export default function SigninForm() {
           </div>
         </div>
       </section>
+      <button
+        onClick={() => {
+          console.log(123);
+          createUser("simon@ads.pl", "11marzec");
+          debugger;
+        }}
+      >
+        create
+      </button>
     </div>
   );
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    createUser: (email, password) => dispatch(createUser(email, password))
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(SigninForm);
