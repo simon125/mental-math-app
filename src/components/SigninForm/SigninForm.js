@@ -1,35 +1,21 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Formik } from "formik";
-import {
-  validatePhraseLength,
-  validateEmail,
-  validatePasswords
-} from "../../utils/validate";
-import InputForm from "../InputForm/InputForm";
+import { store } from "../../store";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 import MathQuote from "../MathQuote/MathQuote";
 import "./SigninForm.scss";
 import { createUser } from "../../actions/authActions";
+import PropTypes from "prop-types";
+import { signInGoogle } from "../../firebase";
 
-function SigninForm({ createUser }) {
+function SigninForm({ createUser, isCreatingAccountValid, message }) {
   const [singUpCredentials, setCredentials] = useState({
     name: "",
     email: "",
     password: "",
     repeatedPassword: ""
   });
-
-  const validateSignInForm = ({ name, email, password, repeatedPassword }) => {
-    const nameStatus = validatePhraseLength(name);
-    const emailStatus = validateEmail(email);
-    const passwordsStatus = validatePasswords(password, repeatedPassword);
-    return {
-      name: nameStatus.message,
-      email: emailStatus.message,
-      password: passwordsStatus.message,
-      repeatedPassword: passwordsStatus.message
-    };
-  };
 
   return (
     <div className="page">
@@ -43,89 +29,106 @@ function SigninForm({ createUser }) {
             <div className="signin-container__form">
               <Formik
                 initialValues={{ ...singUpCredentials }}
-                onSubmit={(values, { setSubmitting }) => {
-                  setCredentials({ ...values });
-                  setTimeout(() => setSubmitting(false), 3 * 1000);
+                onSubmit={(values, { setSubmitting, resetForm, setErrors }) => {
+                  createUser(values.email, values.password).then(() => {
+                    const {
+                      authReducer: { isValid, message }
+                    } = store.getState();
+                    isValid ? resetForm() : setErrors({ email: message });
+                  });
                 }}
-                validate={validateSignInForm}
-              >
-                {({
-                  values,
-                  errors,
-                  handleChange,
-                  handleSubmit,
-                  setValues,
-                  isValidating,
-                  handleBlur,
-                  touched
-                }) => (
-                  <form
-                    onSubmit={e => {
-                      e.preventDefault();
-                      if (isValidating) {
-                        debugger;
-                        handleSubmit();
-                        setValues({
-                          name: "",
-                          email: "",
-                          password: "",
-                          repeatedPassword: ""
-                        });
-                      }
-                    }}
-                  >
-                    <InputForm
-                      onBlur={handleBlur}
-                      handleChange={handleChange}
-                      value={values.name}
-                      isValid={errors.name && touched.name}
-                      errMsg={errors.name}
-                      id="name"
-                      name="name"
-                      label="Name"
-                      type="text"
-                    />
-                    <InputForm
-                      onBlur={handleBlur}
-                      handleChange={handleChange}
-                      value={values.email}
-                      id="email"
-                      name="email"
-                      isValid={errors.email && touched.email}
-                      errMsg={errors.email}
-                      label="Email"
-                      type="text"
-                    />
-                    <InputForm
-                      onBlur={handleBlur}
-                      handleChange={handleChange}
-                      value={values.password}
-                      id="password"
-                      name="password"
-                      isValid={errors.password && touched.password}
-                      errMsg={errors.password}
-                      label="Password"
-                      type="password"
-                    />
-                    <InputForm
-                      onBlur={handleBlur}
-                      handleChange={handleChange}
-                      value={values.repeatedPassword}
-                      id="repeatedPassword"
-                      name="repeatedPassword"
-                      errMsg={errors.repeatedPassword}
-                      isValid={
-                        errors.repeatedPassword && touched.repeatedPassword
-                      }
-                      label="Repeat password"
-                      type="password"
-                    />
+                validationSchema={Yup.object().shape({
+                  email: Yup.string()
+                    .email()
+                    .required(),
+                  password: Yup.string()
+                    .min(5)
+                    .max(12)
+                    .required(),
+                  repeatedPassword: Yup.string()
+                    .oneOf([Yup.ref("password"), null], "Passwords must match")
+                    .required(),
+                  name: Yup.string()
+                    .min(5)
+                    .max(12)
+                    .required()
+                })}
+                render={({ errors, touched }) => (
+                  <Form>
+                    <div className="input-form">
+                      <Field
+                        className={
+                          touched.name && errors.name ? "is-invalid" : ""
+                        }
+                        id="name"
+                        name="name"
+                      />
+                      <label htmlFor="name">Name</label>
+                      {touched.name && errors.name ? (
+                        <span className="show-message">{errors.name}</span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div className="input-form">
+                      <Field
+                        className={
+                          touched.email && errors.email ? "is-invalid" : ""
+                        }
+                        id="email"
+                        name="email"
+                      />
+                      <label htmlFor="email">Email</label>
+                      {touched.email && errors.email ? (
+                        <span className="show-message">{errors.email}</span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div className="input-form">
+                      <Field
+                        className={
+                          touched.password && errors.password
+                            ? "is-invalid"
+                            : ""
+                        }
+                        id="password"
+                        name="password"
+                        type="password"
+                      />
+                      <label htmlFor="password">Password</label>
+                      {touched.password && errors.password ? (
+                        <span className="show-message">{errors.password}</span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div className="input-form">
+                      <Field
+                        className={
+                          touched.repeatedPassword && errors.repeatedPassword
+                            ? "is-invalid"
+                            : ""
+                        }
+                        id="repeatedPassword"
+                        name="repeatedPassword"
+                        type="password"
+                      />
+                      <label htmlFor="repeatedPassword">Repeat password</label>
+                      {touched.repeatedPassword && errors.repeatedPassword ? (
+                        <span className="show-message">
+                          {errors.repeatedPassword}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                     <button type="submit" className="btn btn-dark">
                       Sing In
                     </button>
-                  </form>
+                  </Form>
                 )}
-              </Formik>
+              />
             </div>
 
             <div className="or-container">
@@ -140,22 +143,13 @@ function SigninForm({ createUser }) {
               >
                 <span className="fab fa-facebook-f" /> Facebook register
               </button>
-              <button className="btn google-btn">
+              <button onClick={signInGoogle} className="btn google-btn">
                 <span className="fab fa-google" /> Google register
               </button>
             </div>
           </div>
         </div>
       </section>
-      <button
-        onClick={() => {
-          console.log(123);
-          createUser("simon@ads.pl", "11marzec");
-          debugger;
-        }}
-      >
-        create
-      </button>
     </div>
   );
 }
@@ -165,8 +159,20 @@ const mapDispatchToProps = dispatch => {
     createUser: (email, password) => dispatch(createUser(email, password))
   };
 };
+const mapStateToProps = state => {
+  return {
+    isCreatingAccountValid: state.authReducer.isValid,
+    message: state.authReducer.message
+  };
+};
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SigninForm);
+
+SigninForm.propTypes = {
+  isCreatingAccountValid: PropTypes.bool,
+  message: PropTypes.string,
+  createUser: PropTypes.func
+};

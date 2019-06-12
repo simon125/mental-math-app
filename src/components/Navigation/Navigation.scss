@@ -23,7 +23,11 @@ header {
       align-items: center;
       list-style: none;
       li {
-        a {
+        a,
+        button {
+          border: none;
+          background: transparent;
+          outline: none;
           color: #fff;
           text-decoration: none;
           display: block;
