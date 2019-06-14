@@ -7,7 +7,7 @@ import MathQuote from "../MathQuote/MathQuote";
 import "./SigninForm.scss";
 import { createUser } from "../../actions/authActions";
 import PropTypes from "prop-types";
-import { signInGoogle } from "../../firebase";
+import { signInGoogle, singInFacebook } from "../../firebase";
 
 function SigninForm({ createUser, isCreatingAccountValid, message }) {
   const [singUpCredentials, setCredentials] = useState({
@@ -137,10 +137,7 @@ function SigninForm({ createUser, isCreatingAccountValid, message }) {
               <span className="line" />
             </div>
             <div className="form-box__btn-group">
-              <button
-                onClick={() => console.log(singUpCredentials)}
-                className="btn facebook-btn"
-              >
+              <button onClick={singInFacebook} className="btn facebook-btn">
                 <span className="fab fa-facebook-f" /> Facebook register
               </button>
               <button onClick={signInGoogle} className="btn google-btn">
