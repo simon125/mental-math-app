@@ -2,6 +2,7 @@
 
 header {
   box-sizing: border-box;
+  margin: 0;
   width: 100%;
   min-height: 15vh;
   padding-top: 20px;
@@ -23,7 +24,11 @@ header {
       align-items: center;
       list-style: none;
       li {
-        a {
+        a,
+        button {
+          border: none;
+          background: transparent;
+          outline: none;
           color: #fff;
           text-decoration: none;
           display: block;
@@ -41,6 +46,32 @@ header {
           }
           span.fa-info-circle {
             border: none;
+          }
+        }
+        .link-left,
+        .link-right {
+          transform: translateX(0);
+          opacity: 1;
+          transition: all 0.4s ease-out;
+        }
+        .link-left.active,
+        .link-right.active {
+          opacity: 0;
+        }
+        .link-left.active {
+          transform: translateX(150px) scale(0.7);
+          visibility: hidden;
+          pointer-events: none;
+          @media screen and (max-width: 610px) {
+            transform: translateX(50px) scale(0.7);
+          }
+        }
+        .link-right.active {
+          transform: translateX(-150px) scale(0.7);
+          visibility: hidden;
+          pointer-events: none;
+          @media screen and (max-width: 610px) {
+            transform: translateX(-50px) scale(0.7);
           }
         }
       }
