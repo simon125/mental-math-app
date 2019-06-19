@@ -2,6 +2,7 @@
 
 header {
   box-sizing: border-box;
+  margin: 0;
   width: 100%;
   min-height: 15vh;
   padding-top: 20px;
@@ -61,11 +62,17 @@ header {
           transform: translateX(150px) scale(0.7);
           visibility: hidden;
           pointer-events: none;
+          @media screen and (max-width: 610px) {
+            transform: translateX(50px) scale(0.7);
+          }
         }
         .link-right.active {
           transform: translateX(-150px) scale(0.7);
           visibility: hidden;
           pointer-events: none;
+          @media screen and (max-width: 610px) {
+            transform: translateX(-50px) scale(0.7);
+          }
         }
       }
       li.hamburger-btn:hover {
